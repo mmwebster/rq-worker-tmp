@@ -9,6 +9,7 @@
 # Imports and External Refs
 #####################################################################################
 import old_worker as rq # import reqourse worker
+import sys
 
 
 
@@ -117,6 +118,8 @@ def main():
             print ",",
     print " ]"
     print
+
+    sys.exit("TESTING")
 
     # Now get the consolidated one path tree from these one path subtrees
     descendents = {} # and roots children at `head.children`

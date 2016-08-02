@@ -20,8 +20,6 @@ def appendAndDict(some_list, some_dict, i, node)
   return i
 end
 
-binding.pry
-
 # dictionary of all testing courses
 course = {
         'MATH19A'=> Course.new('MATH', '19A', nil, 5, {'fall'=>true, 'winter'=>true, 'spring'=>true}),
@@ -66,15 +64,11 @@ course = {
         'PHYS5N'=> Course.new('PHYS', '5N', nil, 1, {'fall'=>false, 'winter'=>false, 'spring'=>true})        # i=39
         }
 
-binding.pry
-
 # some vars
 uniqueCourseNodes = [] # list that will contain all unique course nodes below
 courseNodeLookupDict = {} # dict used to lookup course node in `uniqueCourse` by its cid
 i = 0 # index to inc. as val in dict: [cid]->[index]
 head = Node.new([],nil,8,nil,nil,true) # head of the final tree passed mapTimeline
-
-binding.pry
 
 # all unique course nodes and their immediate children (no uncertainty)
 i = appendAndDict(uniqueCourseNodes, courseNodeLookupDict, i, Node.new([], course['CMPE8']))
@@ -106,11 +100,13 @@ i = appendAndDict(uniqueCourseNodes, courseNodeLookupDict, i, Node.new([Node.new
 i = appendAndDict(uniqueCourseNodes, courseNodeLookupDict, i, Node.new([Node.new([],course['CMPE13']), Node.new([],course['EE103'])], course['CMPE167']))
 i = appendAndDict(uniqueCourseNodes, courseNodeLookupDict, i, Node.new([Node.new([],course['CMPE129B'])], course['CMPE129C']))
 
-binding.pry
-
 # connect all subtrees so that can sort uniqueCourseNodes by num descendents
 uniqueNodesHead = Node.new(uniqueCourseNodes)
+
 putsTree(uniqueNodesHead)
+
+binding.pry
+
 dfsConnectNodeSubtrees(uniqueNodesHead, uniqueCourseNodes, courseNodeLookupDict)
 
 binding.pry
@@ -119,11 +115,11 @@ binding.pry
 dfsSort(uniqueNodesHead, false)
 # puts immediate children of head in list of unique nodes ordered by #descendents in ascending order
 puts 'New ordering'
-puts '[ '
+print '[ '
 uniqueNodesHead.children.each_with_index do |child, i|
   puts child.course.cid
   if (i < uniqueNodesHead.children.length - 1)
-      puts ','
+      print ','
   end
 end
 puts ' ]'
@@ -158,11 +154,11 @@ end
 binding.pry
 
 puts 'Immediate children of head of consolidated one-path tree'
-puts '[ '
+print '[ '
 for i in 0...head.children.length
   puts head.children[i].course.cid
   if i < head.children.length - 1
-    puts ','
+    print ','
   end
 end
 puts ' ]'
@@ -172,26 +168,26 @@ binding.pry
 
 # completedCourses = {'AMS10':true, 'AMS20':true, 'CHEM1A':true, 'CMPE100':true, 'CMPE12':true, 'CMPE13':true, 'CMPE16':true, 'CMPE8':true, 'CMPS12B':true, 'MATH19A':true, 'MATH19B':true, 'MATH23A':true, 'PHYS5A':true, 'PHYS5C':true}
 completedCourses = {}
-quarters = [ \
-        Quarter.new([], 'fall', 19), \
-        Quarter.new([], 'winter', 19), \
-        Quarter.new([], 'spring', 19), \
-        Quarter.new([], 'fall', 19), \
-        Quarter.new([], 'winter', 19), \
-        Quarter.new([], 'spring', 19), \
-        Quarter.new([], 'fall', 19), \
-        Quarter.new([], 'winter', 19), \
-        Quarter.new([], 'spring', 19), \
-        Quarter.new([], 'fall', 19), \
-        Quarter.new([], 'winter', 19), \
-        Quarter.new([], 'spring', 19), \
-        Quarter.new([], 'fall', 19), \
-        Quarter.new([], 'winter', 19), \
-        Quarter.new([], 'spring', 19), \
-        Quarter.new([], 'fall', 19), \
-        Quarter.new([], 'winter', 19), \
-        Quarter.new([], 'spring', 19)
-        ]
+quarters = [
+             Quarter.new([], 'fall', 19),
+             Quarter.new([], 'winter', 19),
+             Quarter.new([], 'spring', 19),
+             Quarter.new([], 'fall', 19),
+             Quarter.new([], 'winter', 19),
+             Quarter.new([], 'spring', 19),
+             Quarter.new([], 'fall', 19),
+             Quarter.new([], 'winter', 19),
+             Quarter.new([], 'spring', 19),
+             Quarter.new([], 'fall', 19),
+             Quarter.new([], 'winter', 19),
+             Quarter.new([], 'spring', 19),
+             Quarter.new([], 'fall', 19),
+             Quarter.new([], 'winter', 19),
+             Quarter.new([], 'spring', 19),
+             Quarter.new([], 'fall', 19),
+             Quarter.new([], 'winter', 19),
+             Quarter.new([], 'spring', 19)
+           ]
 
 binding.pry
 

@@ -12,6 +12,7 @@
 ################################################################################
 # Imports and External Refs
 ################################################################################
+require 'pry'
 
 ################################################################################
 # Enum definitions
@@ -147,7 +148,7 @@ class Course
 
   def total_units
     total_units = 0
-    if !@concurrent_course.nil?
+    unless @concurrent_course.nil?
       total_units += @concurrent_course.units
       total_units += @units
     end
@@ -317,24 +318,22 @@ end
 def putsTree(head)
   puts '- - - - - - - Printing Tree - - - - - - - - -'
   current_level = [head]
-  while current_level
-    nextLevel = []
+  while current_level.length > 0
+    next_level = []
     current_level.each do |node|
-      if !node.course == nil
-          puts '(' + node.object_id.to_s + '->numReq: ' + node.num_required.to_s +
-            ', cid: ' + node.course.cid + ')'
+      if node.course != nil
+        print '(' + node.object_id.to_s + '->numReq: ' + node.num_required.to_s + ', cid: ' + node.course.cid + ')'
       else
-          puts '(' + node.object_id.to_s + '->numReq: ' + node.num_required.to_s +
-            ', cid: ..)'
+        print '(' + node.object_id.to_s + '->numReq: ' + node.num_required.to_s + ', cid: ..)'
       end
 
       node.children.each do |child|
-          nextLevel.push(child)
+        next_level.push(child)
       end
     end
     puts # add new line
     puts
-    current_level = nextLevel # proceed to next level
+    current_level = next_level # proceed to next level
   end
 end
 
@@ -346,12 +345,12 @@ def putsPriorityStack(stack)
   # TODO: ruby equivalent for assertion
   # assert isinstance(stack, Stack)
   puts '- - -  - Printing Priority Stack - - - - -'
-  puts '| is_root | '
+  print '| is_root | '
   stack.items.each do |node|
     if node.course != nil
-      puts node.course.cid + ' | '
+      print node.course.cid + ' | '
     else
-      puts 'is_root | '
+      print 'is_root | '
     end
   end
   puts # add the newline
@@ -366,9 +365,9 @@ def putsDictionary(dictionary)
   # assert isinstance(dictionary, dict)
   keys = dictionary.keys
   puts '- - - - - Printing Dictionary - - - - -'
-  puts '{ '
+  print '{ '
   keys.each do |key|
-      puts ''' + key + '': ' + dictionary[key].to_s + ' , '
+      print "'" + key + "': " + dictionary[key].to_s + " , "
   end
   puts '}'
 end
@@ -520,7 +519,7 @@ def courseDoesEval(node, timeline)
   end
   # 3/4. All reqs satisfied? (children with 'pre' and 'co' as parent_rel)
   node.children.each do |child|
-    if !timeline.satisfied?(child.course, child.parent_rel)
+    unless timeline.satisfied?(child.course, child.parent_rel)
       return false
     end
   # 5/6. Make sure that quarter unit limit has not been exceeded (including
@@ -577,7 +576,7 @@ def mapTimeline(timeline, headOrigin)
         continue # move to next node in stack
       end
       # 11. Node's course passes eval for current quarter?
-      if !courseDoesEval(node, timeline)
+      unless courseDoesEval(node, timeline)
         continue # move to next node in stack
       end
       # 12. Add course and any concurrents to addedCourses dict. & current
@@ -586,7 +585,7 @@ def mapTimeline(timeline, headOrigin)
       addedCourses[node.course.cid] = node.course
       timeline.quarters[timeline.current_quarter].courses.push(node.course)
       # 13. Current quarter's total units equal quarter's max_units?
-      if !timeline.quarters[timeline.current_quarter].total_units == \
+      unless timeline.quarters[timeline.current_quarter].total_units == \
               timeline.quarters[timeline.current_quarter].max_units
         continue # move to next node in stack
       else
