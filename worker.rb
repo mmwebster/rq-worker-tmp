@@ -105,6 +105,9 @@ end
 #        set to nil..not used if does not contain course)
 # ******************************************************************************
 class Node
+  attr_accessor :children, :course, :num_required, :parent_rel,
+                :num_descendents, :is_root
+
   def initialize(children = [], course = nil, num_required = 0,
                  parent_rel = 'pre', num_descendents = nil, is_root = false)
     @children = children
@@ -114,8 +117,6 @@ class Node
     @num_descendents = num_descendents
     @is_root = is_root
   end
-  attr_accessor :children, :course, :num_required, :parent_rel,
-                :num_descendents, :is_root
 end
 
 # ******************************************************************************
@@ -127,6 +128,9 @@ end
 #        the course is offered
 # ******************************************************************************
 class Course
+  attr_accessor :subject, :number, :title, :units, :seasons_offered,
+                :concurrent_course
+
   def initialize(subject, number, title, units, seasons_offered = {},
                  concurrent_course = nil)
     @subject = subject
@@ -160,6 +164,8 @@ end
 # @param max_units the max number of units desired for this quarter
 # ******************************************************************************
 class Quarter
+  attr_accessor :courses, :season, :max_units
+
   def initialize(courses = [], season = nil, max_units = 19)
     # assert all(isinstance(course, Course) for course in courses)
     @courses = courses
@@ -188,6 +194,9 @@ end
 # @param starting_season The default season of the first quarter in the timeline
 # *****************************************************************************
 class Timeline
+  attr_accessor :completed_courses, :quarters, :current_quarter,
+                :starting_season
+
   def initialize(completed_courses = {}, quarters = [], current_quarter = 0,
                  starting_season = 'fall')
     # TODO: put in ruby equivalent
