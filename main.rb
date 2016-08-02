@@ -120,9 +120,9 @@ dfsSort(uniqueNodesHead, false)
 # puts immediate children of head in list of unique nodes ordered by #descendents in ascending order
 puts 'New ordering'
 puts '[ '
-for i in range(len(uniqueNodesHead.children))
-  puts uniqueNodesHead.children[i].course.cid
-  if (i < len(uniqueNodesHead.children) - 1)
+uniqueNodesHead.children.each_with_index do |child, i|
+  puts child.course.cid
+  if (i < uniqueNodesHead.children.length - 1)
       puts ','
   end
 end
@@ -143,11 +143,10 @@ for node in uniqueNodesHead.children
     head.children.push(node)
     # clean head's children of any nodes now present in unique descendents
     i = 0
-    length = len(head.children) # must do this method b/c removing items from the list while iterating
+    length = head.children.length # must do this method b/c removing items from the list while iterating
     while (i < length)
       if descendents.key?(head.children[i].course.cid)
-        # TODO del method replacement
-        del head.children[i]
+        head.children.delete_at(i)
         i -= 1
         length -= 1 # decrement counter and length after removing item
       end
