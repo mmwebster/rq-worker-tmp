@@ -119,8 +119,6 @@ def main():
     print " ]"
     print
 
-    sys.exit("TESTING")
-
     # Now get the consolidated one path tree from these one path subtrees
     descendents = {} # and roots children at `head.children`
     for node in uniqueNodesHead.children:
@@ -169,6 +167,7 @@ def main():
             rq.Quarter([], "winter", 19), \
             rq.Quarter([], "spring", 19)
             ]
+
     timeline = rq.Timeline(completedCourses, quarters)
 
     # print timeline
@@ -186,5 +185,7 @@ def main():
     print
     print "Finished timeline!!!:"
     rq.printTimeline(timeline)
+
+    sys.exit("TESTING")
 
 main()

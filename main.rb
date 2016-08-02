@@ -102,14 +102,9 @@ i = appendAndDict(uniqueCourseNodes, courseNodeLookupDict, i, Node.new([Node.new
 
 # connect all subtrees so that can sort uniqueCourseNodes by num descendents
 uniqueNodesHead = Node.new(uniqueCourseNodes)
-
 putsTree(uniqueNodesHead)
 
-binding.pry
-
 dfsConnectNodeSubtrees(uniqueNodesHead, uniqueCourseNodes, courseNodeLookupDict)
-
-binding.pry
 
 # sort by num descendents
 dfsSort(uniqueNodesHead, false)
@@ -117,15 +112,13 @@ dfsSort(uniqueNodesHead, false)
 puts 'New ordering'
 print '[ '
 uniqueNodesHead.children.each_with_index do |child, i|
-  puts child.course.cid
+  print child.course.cid
   if (i < uniqueNodesHead.children.length - 1)
       print ','
   end
 end
 puts ' ]'
 puts
-
-binding.pry
 
 # Now get the consolidated one path tree from these one path subtrees
 descendents = {} # and roots children at `head.children`
@@ -151,12 +144,10 @@ for node in uniqueNodesHead.children
   end
 end
 
-binding.pry
-
 puts 'Immediate children of head of consolidated one-path tree'
 print '[ '
 for i in 0...head.children.length
-  puts head.children[i].course.cid
+  print head.children[i].course.cid
   if i < head.children.length - 1
     print ','
   end
@@ -164,9 +155,8 @@ end
 puts ' ]'
 puts
 
-binding.pry
-
-# completedCourses = {'AMS10':true, 'AMS20':true, 'CHEM1A':true, 'CMPE100':true, 'CMPE12':true, 'CMPE13':true, 'CMPE16':true, 'CMPE8':true, 'CMPS12B':true, 'MATH19A':true, 'MATH19B':true, 'MATH23A':true, 'PHYS5A':true, 'PHYS5C':true}
+# completedCourses = {'AMS10' => true, 'AMS20' => true, 'CHEM1A' => true, 'CMPE100' => true, 'CMPE12' => true, 'CMPE13' => true, 'CMPE16' => true, 'CMPE8' => true, 'CMPS12B' => true, 'MATH19A' => true, 'MATH19B' => true, 'MATH23A' => true, 'PHYS5A' => true, 'PHYS5C' => true}
+# completedCourses = {'AMS10' => true, 'AMS20' => true, 'CMPE100' => true, 'CMPE12' => true, 'CMPE13' => true, 'CMPE16' => true, 'CMPE8' => true, 'CMPS12B' => true, 'MATH19A' => true, 'MATH19B' => true, 'MATH23A' => true, 'PHYS5A' => true, 'PHYS5C' => true}
 completedCourses = {}
 quarters = [
              Quarter.new([], 'fall', 19),
@@ -189,33 +179,21 @@ quarters = [
              Quarter.new([], 'spring', 19)
            ]
 
-binding.pry
-
 timeline = Timeline.new(completedCourses, quarters)
-
-binding.pry
 
 # puts timeline
 puts 'Timeline knot:'
-putsTimeline.new(timeline)
-
-binding.pry
+putsTimeline(timeline)
 
 # puts co-pt
 puts 'Current co-pt:'
 putsTree(head)
 
-binding.pry
-
 # createTimeline takes as input a consolidated one-path tree
-mapTimeline.new(timeline, head)
-
-binding.pry
+mapTimeline(timeline, head)
 
 # puts timeline again
 puts
 puts 'Finished timeline!!!:'
 
-binding.pry
-
-putsTimeline.new(timeline)
+putsTimeline(timeline)

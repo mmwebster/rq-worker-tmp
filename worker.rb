@@ -13,6 +13,7 @@
 # Imports and External Refs
 ################################################################################
 require 'pry'
+require 'deep_clone'
 
 ################################################################################
 # Enum definitions
@@ -47,6 +48,8 @@ end
 # @desc A basic queue implementation
 # ******************************************************************************
 class Queue
+  attr_accessor :items
+
   def initialize
     @items = []
   end
@@ -73,6 +76,8 @@ end
 #       array)
 # ******************************************************************************
 class Stack
+  attr_accessor :items
+
   def initialize
     @items = []
   end
@@ -143,16 +148,15 @@ class Course
   end
 
   def cid
-    @subject + @number.to_s
+    return @subject + @number.to_s
   end
 
   def total_units
-    total_units = 0
+    total_units = @units
     unless @concurrent_course.nil?
       total_units += @concurrent_course.units
-      total_units += @units
     end
-    total_units
+    return total_units
   end
 end
 
@@ -180,7 +184,7 @@ class Quarter
     @courses.each do |course|
       total_units += course.total_units
     end
-    total_units
+    return total_units
   end
 end
 
@@ -210,7 +214,7 @@ class Timeline
 
   # @desc Return the # of populated quarters
   def num_quarters
-    @quarters.length
+    return @quarters.length
   end
 
   # @desc Returns a boolean of whether or not the passed course has been
@@ -218,9 +222,9 @@ class Timeline
   # @param course The course to test for having been completed
   def completed?(course)
     if @completed_courses.key?(course.cid)
-      true
+      return true
     else
-      false
+      return false
     end
   end
 
@@ -233,7 +237,7 @@ class Timeline
   def satisfied?(course, parent_rel)
     # check if is in completed courses
     if completed?(course)
-      true
+      return true
     end
 
     # determine offset from current_quarter
@@ -242,6 +246,7 @@ class Timeline
     elsif parent_rel == 'co'
       offset = 0
     else
+      raise 'ERROR: invalid parent_rel type'
       (0..9).each do
         puts
       end
@@ -262,7 +267,7 @@ class Timeline
     iterating_quarters.each do |quarter|
       quarter.courses.each do |c|
         if course.cid == c.cid
-          true
+          return true
         end
       end
     end
@@ -273,9 +278,9 @@ class Timeline
   #       quarters list)
   def current_season
     if @quarters
-      @quarters[@current_quarter].season
+      return @quarters[@current_quarter].season
     else
-      @starting_season
+      return @starting_season
     end
   end
 end
@@ -297,7 +302,7 @@ def putsTimeline(timeline)
   year = 1
 
   (0...timeline.quarters.length).each do |i|
-    if (i % 3).zero?.zero?
+    if (i % 3).zero?
       puts '- - - - - - Year ' + year.to_s + ' - - - - - -'
       year += 1
     end
@@ -305,7 +310,7 @@ def putsTimeline(timeline)
          timeline.quarters[i].total_units.to_s + ' units(s), (' +
          timeline.quarters[i].season + ')')
     timeline.quarters[i].courses.each do |course|
-      puts(' -' + course.subject + course.number.to_s)
+      puts(' -' + course.cid)
     end
   end
 end
@@ -380,17 +385,17 @@ end
 # @param *args Any arguments that the function needs outside of the node
 # ******************************************************************************
 # TODO: *args multi argument thing
-def bfs(node, function, *args)
+def bfs(node, lam, *args)
   # TODO: assertion
   # assert isinstance(node, Node)
   queue = Queue.new
   queue.enqueue(node)
 
-  # proceed with BFS, putsing element along the way
+  # proceed with BFS, passing element along the way
   while !queue.empty?
     n = queue.dequeue
     # perform passed function
-    function(n, *args)
+    lam.call(n, *args)
     # queue every child of n
     n.children.each do |child|
       queue.enqueue(child)
@@ -410,7 +415,7 @@ def dfsSort(node, isDescending)
   # for every child of node
   node.children.each do |child|
     # visit the child
-    dfsSort(child, isAscending)
+    dfsSort(child, isDescending)
     # inc. num of descendents on node by this child's descendents and the child
     # itself
     node.num_descendents += child.num_descendents + 1
@@ -484,7 +489,7 @@ end
 def createPriorityStack(node)
   # @desc Pushes a node into the priority stack
   # @param node The node to be pushed
-  def pushToPriorityStack(node)
+  def pushToPriorityStack(node, priorityStack)
     unless node.is_root
       priorityStack.push(node)
     end
@@ -492,8 +497,10 @@ def createPriorityStack(node)
 
   # init final priority stack
   priorityStack = Stack.new
+  # proxy the custom BFS function
+  lam = -> (node, priorityStack) {pushToPriorityStack(node, priorityStack)}
   # populate priority stack
-  bfs(node, pushToPriorityStack)
+  bfs(node, lam, priorityStack)
   # return it
   priorityStack
 end
@@ -511,11 +518,14 @@ def courseDoesEval(node, timeline)
   # assert isinstance(timeline, Timeline)
   # 1. course in completed courses?
   if timeline.completed?(node.course)
-    false
+    return false
   end
   # 2. is it offered this quarter?
+  # if node.course.cid == "PHYS5A"
+  #   binding.pry
+  # end
   if not node.course.seasons_offered[timeline.current_season]
-    false
+    return false
   end
   # 3/4. All reqs satisfied? (children with 'pre' and 'co' as parent_rel)
   node.children.each do |child|
@@ -534,7 +544,7 @@ def courseDoesEval(node, timeline)
       return false # collectively exceed unit limit
   end
   # All tests passed
-  true
+  return true
 end
 
 # ******************************************************************************
@@ -548,7 +558,8 @@ def mapTimeline(timeline, headOrigin)
   # assert isinstance(timeline, Timeline)
   # assert isinstance(headOrigin, Node)
   # TODO: ruby deep copy
-  head = copy.deepcopy(headOrigin)
+  # head = copy.deepcopy(headOrigin)
+  head = DeepClone.clone(headOrigin)
   # dict. of courses used to quickly check if course has already been placed
   addedCourses = {}
   # always start mapping (or remapping) at the first quarter
@@ -569,15 +580,15 @@ def mapTimeline(timeline, headOrigin)
     priorityStack = createPriorityStack(head)
     putsPriorityStack(priorityStack)
     # 9. operate on each node in stack unless exit condition evals
-    range(priorityStack.items.length).each do |i|
+    (0...priorityStack.items.length).each do |i|
       node = priorityStack.pop
       # 10. Node's course exists in addedCourses dict.?
       if addedCourses.key?(node.course.cid)
-        continue # move to next node in stack
+        next # move to next node in stack
       end
       # 11. Node's course passes eval for current quarter?
       unless courseDoesEval(node, timeline)
-        continue # move to next node in stack
+        next # move to next node in stack
       end
       # 12. Add course and any concurrents to addedCourses dict. & current
       #     quarter in timeline. Undecided about the concurrent, so not adding
@@ -587,7 +598,7 @@ def mapTimeline(timeline, headOrigin)
       # 13. Current quarter's total units equal quarter's max_units?
       unless timeline.quarters[timeline.current_quarter].total_units == \
               timeline.quarters[timeline.current_quarter].max_units
-        continue # move to next node in stack
+        next # move to next node in stack
       else
         break # move to next quarter, recomputing priority stack
       end
@@ -600,7 +611,7 @@ def mapTimeline(timeline, headOrigin)
         seasons = ['fall', 'winter', 'spring']
         old_season = timeline.quarters[timeline.current_quarter-1].season
         new_season = seasons[(seasonsMap[old_season] + 1) % 3]
-        timeline.quarters.push(Quarter([], new_season))
+        timeline.quarters.push(Quarter.new([], new_season))
     end
     # 15. Mutate and cleanup the tree copy, `head`, from any nodes matching
     # courses in dict. temp for testing

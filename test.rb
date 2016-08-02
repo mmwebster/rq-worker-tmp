@@ -15,6 +15,20 @@ class User
   def sayHi
     puts("hi")
   end
+  def isOne?(num)
+    if num == 1
+      return true
+    else
+      return false
+    end
+  end
+  def something(num)
+    if isOne?(num)
+      return true
+    else
+      return false
+    end
+  end
 end
 #
 # users = []
@@ -59,9 +73,8 @@ users = [
 ]
 
 users.each do |user|
-  puts("User:")
-  print("   arr=" + user.arr.to_s)
   print ', str=' + user.str
   puts(", num=" + user.num.to_s)
-
 end
+
+puts "Is 1, one? => " + users[0].something(1).to_s
