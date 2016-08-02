@@ -247,7 +247,7 @@ class Timeline
       offset = 0
     else
       raise 'ERROR: invalid parent_rel type'
-      (0..9).each do
+      (0...10).each do
         puts
       end
     end
@@ -260,7 +260,7 @@ class Timeline
       iterating_quarters = [@quarters[0]]
     else
       # TODO: find ruby equivalent for end_index
-      iterating_quarters = @quarters[0..end_index]
+      iterating_quarters = @quarters[0...end_index]
     end
 
     # check the quarters

@@ -145,7 +145,7 @@ def main():
     print " ]"
     print
 
-    # completedCourses = {"AMS10":True, "AMS20":True, "CHEM1A":True, "CMPE100":True, "CMPE12":True, "CMPE13":True, "CMPE16":True, "CMPE8":True, "CMPS12B":True, "MATH19A":True, "MATH19B":True, "MATH23A":True, "PHYS5A":True, "PHYS5C":True}
+    # completedCourses = {"AMS10":True, "AMS20":True, "CMPE100":True, "CMPE12":True, "CMPE13":True, "CMPE16":True, "CMPE8":True, "CMPS12B":True, "MATH19A":True, "MATH19B":True, "MATH23A":True, "PHYS5A":True, "PHYS5C":True}
     completedCourses = {}
     quarters = [ \
             rq.Quarter([], "fall", 19), \

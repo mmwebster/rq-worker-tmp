@@ -218,7 +218,9 @@ def printTimeline(timeline):
     assert isinstance(timeline, Timeline)
     print("Timeline:")
     year = 1
-    for i in range(len(timeline.quarters)):
+    bucket = range(len(timeline.quarters))
+    print("BUCKET 1", bucket)
+    for i in bucket:
         if i % 3 == 0:
             print "- - - - - - Year " + str(year) + " - - - - - -"
             year += 1
