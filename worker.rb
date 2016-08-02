@@ -440,8 +440,7 @@ def dfsClean(node, removables)
   while i < end_index
     # if child matches, remove it
     if removables.key?(node.children[i].course.cid)
-      # TODO: del
-      del node.children[i]
+      node.children.delete_at(i)
       # fix i so that it doesn't skip over the next item
       i -= 1
       end_index -= 1
