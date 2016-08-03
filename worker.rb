@@ -137,15 +137,15 @@ class Course
   end
 
   def cid
-    return @subject + @number.to_s
+    @subject + @number.to_s
   end
 
   def total_units
     total_units = @units
-    unless @concurrent_course.nil?
-      total_units += @concurrent_course.units
-    end
-    return total_units
+    # unless @concurrent_course.nil?
+    total_units += @concurrent_course.units unless @concurrent_course.nil?
+    # end
+    total_units
   end
 end
 
@@ -172,7 +172,7 @@ class Quarter
     @courses.each do |course|
       total_units += course.total_units
     end
-    return total_units
+    total_units
   end
 end
 
@@ -200,7 +200,7 @@ class Timeline
 
   # @desc Return the # of populated quarters
   def num_quarters
-    return @quarters.length
+    @quarters.length
   end
 
   # @desc Returns a boolean of whether or not the passed course has been

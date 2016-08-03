@@ -1,0 +1,140 @@
+% compile in vim locally with <colon>,<L>,<tab>,<enter>
+\documentclass{article}
+% document packages
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage[table, dvipsnames]{xcolor}
+\usepackage{listings}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage[final]{pdfpages}
+\usepackage{hyperref}
+\usepackage[toc,page]{appendix}
+\usepackage[T1]{fontenc}
+\usepackage{varwidth}
+\usepackage{adjustbox}
+\usepackage{tcolorbox}
+\usepackage{courier}
+\usepackage{caption}
+\usepackage{geometry}
+\usepackage{gensymb}
+\usepackage{siunitx}
+% \usepackage{fontspec}
+\tcbuselibrary{listings,skins}
+% document settings
+\graphicspath{ {resources/} }
+\addtolength{\topmargin}{-.7in}
+\definecolor{my-blue}{rgb}{0,0.3,.8}
+\definecolor{light-blue}{RGB}{0,210,255}
+\definecolor{light-gray}{gray}{.90}
+\definecolor{codestandard}{RGB}{191,204,204}
+\definecolor{codegreen}{rgb}{0,0.8,0.3}
+\definecolor{codegray}{RGB}{240,240,240}
+\definecolor{codepurple}{rgb}{0.88,0,0.92}
+\definecolor{bgcolor}{RGB}{55,55,55}
+\definecolor{line-num-color}{RGB}{88,88,88}
+
+\lstdefinestyle{pystyle}{
+    backgroundcolor=\color{bgcolor},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\ttfamily\color{bgcolor},
+    stringstyle=\color{codepurple},
+    % basicstyle=\footnotesize\ttfamily,
+    basicstyle=\linespread{1}\color{codestandard}\ttfamily,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=t,
+    keepspaces=true,
+    numbers=none,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=true,
+    tabsize=2,
+    framextopmargin=50pt,
+    frame=bottomline,
+    framexleftmargin=15pt,
+    framextopmargin=0pt,
+    framexbottommargin=10pt,
+    framerule=0pt,
+    frame=tb,
+    framesep=15pt,
+    xleftmargin=15pt,
+    xrightmargin=0pt,
+    upquote=true,
+    aboveskip={1.5\baselineskip}
+}
+\DeclareCaptionFormat{listing}{\rule{\textwidth}{0.8pt}\par\vskip1pt#1#2#3}
+\captionsetup[lstlisting]{format=listing,singlelinecheck=false, margin=0pt, font={sf},labelsep=space,labelfont=bf}
+\renewcommand{\lstlistingname}{Python Code}
+\lstset{style=pystyle}
+\hypersetup{
+  colorlinks,
+  linkcolor=my-blue,
+  linktoc=all
+}
+\newcommand*{\myfont}{\fontfamily{pcr}\selectfont}
+\newcommand{\codei}[1]{\colorbox{SpringGreen}{\texttt{#1}}} % inline code
+\newcommand{\codeb}[2]{
+  \begin{tcolorbox}[width=\textwidth,colback={SpringGreen},title={#1},colbacktitle=DarkGreen,coltitle=SpringGreen]
+    \myfont
+    #2
+  \end{tcolorbox}
+} % block output
+\newcommand{\outputi}[1]{\colorbox{light-gray}{\texttt{#1}}} % inline output
+\newcommand{\outputb}[2]{
+  \begin{tcolorbox}[width=\textwidth,colback={light-gray},title={#1},colbacktitle=gray,coltitle=light-gray]
+    \myfont
+    #2
+  \end{tcolorbox}
+} % block output
+
+\newcommand{\red}[1]{\textcolor{BrickRed}{#1}} % code red text
+\newcommand{\loc}[1]{\textit{\textcolor{Black}{\textbf{#1}}}} % location text (w/ gt, lt symbols)
+%\newcommand{\loc}[1]{\colorbox{light-blue}{\textcolor{Black}{\textbf{#1}}}}
+
+\newcommand{\imagefig}[2]{
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=.7\textwidth]{#1}
+        \caption{#2}
+    \end{figure}
+}
+\newcommand{\imagefigb}[2]{
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{#1}
+        \caption{#2}
+    \end{figure}
+}
+\newcommand{\todo}[1]{\newline\noindent\colorbox{Yellow}{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>}\newline\colorbox{Yellow}{\textbf{TODO}}: - #1 \newline \colorbox{Yellow}{<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<}\newline}
+\newcommand{\createterm}[3]{
+      \item \href{#1}{#2}: #3
+} % create a term entry in the `Definitions and Terminology list`. Params: link, name, desc
+
+\newcommand{\note}[1]{\underline{\textit{Note}}: #1}
+\newcommand{\pycode}[2]{
+  \lstinputlisting[language=Python, caption=#2]{#1}
+  \note{When copying the above code, make sure that you do not copy the page number in between the two pages.}
+}
+
+% document header
+\title{
+  Reqourse Dev. Conventions\\
+}
+\date{August 3, 2016}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Summary}
+This document details the coding conventions used throughout Reqourse. It is incredibly important that all developers adhere to these conventions, as it can easily double the readability of our code. (It's all about that Bus Factor!)
+\section{Ruby}
+  \subsection{Style Guidelines}
+  All code must follow the community \href{https://github.com/bbatsov/ruby-style-guide}{Ruby Style Guide}. To ensure this, we will be using a gem called \href{http://rubocop.readthedocs.io/en/latest/}{Rubocop} that statically analyzes code and prints out a log of all convention violations. In the future we will incorporate this into our deployment cycle so that this gem can automatically prevent convention violations from being pushed to production.
+\end{document}
