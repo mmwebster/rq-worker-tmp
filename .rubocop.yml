@@ -1,0 +1,17 @@
+# inherit_from: ../.rubocop.yml
+
+Metrics/AbcSize:
+  Max: 60
+
+Metrics/CyclomaticComplexity:
+  Max: 8
+
+Metrics/ParameterLists:
+  Enabled: false
+
+Metrics/MethodLength:
+  CountComments: false  # count full line comments?
+  Max: 40
+
+Metrics/PerceivedComplexity:
+  Max: 10

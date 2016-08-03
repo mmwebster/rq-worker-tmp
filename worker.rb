@@ -211,8 +211,8 @@ class Timeline
     false
   end
 
-  # @desc Return a boolean of whether or not the passed course is in a
-  #       quarter `offset` from the current
+  # @desc Return a boolean of whether or not the given course is in the
+  #       quarters: first_quarter..(current_quarter - offset)
   # @param course The course to search for
   # @param parent_rel The requirement type between the course that must be
   #        satisfied (`course`) and the one that needs it to be satisfied.
@@ -222,8 +222,13 @@ class Timeline
     return true if completed?(course)
 
     # determine offset from current_quarter
-    offset = -1 if parent_rel == 'pre'
-    offset = 0 if parent_rel == 'co'
+    offset = if parent_rel == 'pre'
+               -1
+             elsif parent_rel == 'co'
+               0
+             else
+               raise 'ERROR: invalid parent_rel value'
+             end
 
     # determine end index of quarters to look at, from quarter offset
     end_index = @current_quarter + offset
