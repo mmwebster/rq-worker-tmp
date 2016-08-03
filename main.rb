@@ -102,23 +102,24 @@ i = appendAndDict(uniqueCourseNodes, courseNodeLookupDict, i, Node.new([Node.new
 
 # connect all subtrees so that can sort uniqueCourseNodes by num descendents
 uniqueNodesHead = Node.new(uniqueCourseNodes)
-putsTree(uniqueNodesHead)
+# putsTree(uniqueNodesHead)
 
 dfsConnectNodeSubtrees(uniqueNodesHead, uniqueCourseNodes, courseNodeLookupDict)
 
 # sort by num descendents
 dfsSort(uniqueNodesHead, false)
 # puts immediate children of head in list of unique nodes ordered by #descendents in ascending order
-puts 'New ordering'
-print '[ '
-uniqueNodesHead.children.each_with_index do |child, i|
-  print child.course.cid
-  if (i < uniqueNodesHead.children.length - 1)
-      print ','
-  end
-end
-puts ' ]'
-puts
+#
+# puts 'New ordering'
+# print '[ '
+# uniqueNodesHead.children.each_with_index do |child, i|
+#   print child.course.cid
+#   if (i < uniqueNodesHead.children.length - 1)
+#       print ','
+#   end
+# end
+# puts ' ]'
+# puts
 
 # Now get the consolidated one path tree from these one path subtrees
 descendents = {} # and roots children at `head.children`
@@ -144,16 +145,16 @@ for node in uniqueNodesHead.children
   end
 end
 
-puts 'Immediate children of head of consolidated one-path tree'
-print '[ '
-for i in 0...head.children.length
-  print head.children[i].course.cid
-  if i < head.children.length - 1
-    print ','
-  end
-end
-puts ' ]'
-puts
+# puts 'Immediate children of head of consolidated one-path tree'
+# print '[ '
+# for i in 0...head.children.length
+#   print head.children[i].course.cid
+#   if i < head.children.length - 1
+#     print ','
+#   end
+# end
+# puts ' ]'
+# puts
 
 # completedCourses = {'AMS10' => true, 'AMS20' => true, 'CMPE100' => true, 'CMPE12' => true, 'CMPE13' => true, 'CMPE16' => true, 'CMPE8' => true, 'CMPS12B' => true, 'MATH19A' => true, 'MATH19B' => true, 'MATH23A' => true, 'PHYS5A' => true, 'PHYS5C' => true}
 completedCourses = {}
@@ -181,18 +182,18 @@ quarters = [
 timeline = Timeline.new(completedCourses, quarters)
 
 # puts timeline
-puts 'Timeline knot:'
-putsTimeline(timeline)
+# puts 'Timeline knot:'
+# putsTimeline(timeline)
 
 # puts co-pt
-puts 'Current co-pt:'
-putsTree(head)
+# puts 'Current co-pt:'
+# putsTree(head)
 
 # createTimeline takes as input a consolidated one-path tree
 mapTimeline(timeline, head)
 
 # puts timeline again
 puts
-puts 'Finished timeline!!!:'
+# puts 'Finished timeline!!!:'
 
 putsTimeline(timeline)

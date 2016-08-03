@@ -1,15 +1,4 @@
 ################################################################################
-# TODO
-################################################################################
-# 1. translate old copy python stuff to ruby obj cloning
-# 2. append 'end' to all classes and functionions
-# 3. change instance variables to use @
-# 4. fix indentation
-# 5. keep all lines 80 characters or fewer
-# 6. remove all 'return' statements
-# 7. replace all python assertions with their ruby equivalent
-
-################################################################################
 # Imports and External Refs
 ################################################################################
 require 'pry'
@@ -172,7 +161,6 @@ class Quarter
   attr_accessor :courses, :season, :max_units
 
   def initialize(courses = [], season = nil, max_units = 19)
-    # assert all(isinstance(course, Course) for course in courses)
     @courses = courses
     @season = season
     @max_units = max_units
@@ -204,8 +192,6 @@ class Timeline
 
   def initialize(completed_courses = {}, quarters = [], current_quarter = 0,
                  starting_season = 'fall')
-    # TODO: put in ruby equivalent
-    # assert all(isinstance(quarter, Quarter) for quarter in quarters)
     @completed_courses = completed_courses
     @quarters = quarters
     @current_quarter = current_quarter
@@ -259,7 +245,6 @@ class Timeline
     elsif end_index.zero?
       iterating_quarters = [@quarters[0]]
     else
-      # TODO: find ruby equivalent for end_index
       iterating_quarters = @quarters[0...end_index]
     end
 
@@ -296,8 +281,6 @@ end
 # @param timeline The timeline to puts out
 # ******************************************************************************
 def putsTimeline(timeline)
-  # TODO:
-  # assert isinstance(timeline, Timeline)
   puts('Timeline:')
   year = 1
 
@@ -347,8 +330,6 @@ end
 # @param stack The stack to puts, must be of type Stack
 # ******************************************************************************
 def putsPriorityStack(stack)
-  # TODO: ruby equivalent for assertion
-  # assert isinstance(stack, Stack)
   puts '- - -  - Printing Priority Stack - - - - -'
   print '| is_root | '
   stack.items.each do |node|
@@ -366,8 +347,6 @@ end
 # @param dictionary The dictionary
 # ******************************************************************************
 def putsDictionary(dictionary)
-  # TODO: assertion
-  # assert isinstance(dictionary, dict)
   keys = dictionary.keys
   puts '- - - - - Printing Dictionary - - - - -'
   print '{ '
@@ -384,10 +363,7 @@ end
 # @param function The function to be called for every node visit (dequeue)
 # @param *args Any arguments that the function needs outside of the node
 # ******************************************************************************
-# TODO: *args multi argument thing
 def bfs(node, lam, *args)
-  # TODO: assertion
-  # assert isinstance(node, Node)
   queue = Queue.new
   queue.enqueue(node)
 
@@ -426,8 +402,6 @@ def dfsSort(node, isDescending)
   else
     node.children.sort! { |a, b| a.num_descendents <=> b.num_descendents }
   end
-  # # TODO: lambda thing
-  # node.children.sort(key=lambda x: x.num_descendents, reverse=order)
 end
 
 # ******************************************************************************
@@ -512,10 +486,6 @@ end
 # @param timeline A reference to the currently mapped out timeline
 # ******************************************************************************
 def courseDoesEval(node, timeline)
-  # confirm correct types
-  # TODO: assertion
-  # assert isinstance(node, Node)
-  # assert isinstance(timeline, Timeline)
   # 1. course in completed courses?
   if timeline.completed?(node.course)
     return false
@@ -554,11 +524,7 @@ end
 #        copied so that the source tree is not mutated.
 # ******************************************************************************
 def mapTimeline(timeline, headOrigin)
-  # TODO: assertion
-  # assert isinstance(timeline, Timeline)
-  # assert isinstance(headOrigin, Node)
-  # TODO: ruby deep copy
-  # head = copy.deepcopy(headOrigin)
+  # duplicate the head node
   head = DeepClone.clone(headOrigin)
   # dict. of courses used to quickly check if course has already been placed
   addedCourses = {}
@@ -575,10 +541,10 @@ def mapTimeline(timeline, headOrigin)
     #    a BFS is left->right, top->down and a stack is LIFO..making the bottom
     #    right node appear first
     dfsSort(head, false)
-    putsTree(head)
+    # putsTree(head)
     # 8. populate 'priority stack' about the head of tree
     priorityStack = createPriorityStack(head)
-    putsPriorityStack(priorityStack)
+    # putsPriorityStack(priorityStack)
     # 9. operate on each node in stack unless exit condition evals
     (0...priorityStack.items.length).each do |i|
       node = priorityStack.pop
@@ -615,9 +581,9 @@ def mapTimeline(timeline, headOrigin)
     end
     # 15. Mutate and cleanup the tree copy, `head`, from any nodes matching
     # courses in dict. temp for testing
-    putsDictionary(addedCourses)
+    # putsDictionary(addedCourses)
     dfsClean(head, addedCourses)
-    putsTree(head)
+    # putsTree(head)
     # 16. Return to step 5
   end
 end
