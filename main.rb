@@ -104,10 +104,10 @@ i = appendAndDict(uniqueCourseNodes, courseNodeLookupDict, i, Node.new([Node.new
 uniqueNodesHead = Node.new(uniqueCourseNodes)
 # putsTree(uniqueNodesHead)
 
-dfsConnectNodeSubtrees(uniqueNodesHead, uniqueCourseNodes, courseNodeLookupDict)
+dfs_connect_node_subtrees(uniqueNodesHead, uniqueCourseNodes, courseNodeLookupDict)
 
 # sort by num descendents
-dfsSort(uniqueNodesHead, false)
+dfs_sort(uniqueNodesHead, false)
 # puts immediate children of head in list of unique nodes ordered by #descendents in ascending order
 #
 # puts 'New ordering'
@@ -183,17 +183,17 @@ timeline = Timeline.new(completedCourses, quarters)
 
 # puts timeline
 # puts 'Timeline knot:'
-# putsTimeline(timeline)
+# puts_timeline(timeline)
 
 # puts co-pt
 # puts 'Current co-pt:'
 # putsTree(head)
 
 # createTimeline takes as input a consolidated one-path tree
-mapTimeline(timeline, head)
+map_timeline(timeline, head)
 
 # puts timeline again
 puts
 # puts 'Finished timeline!!!:'
 
-putsTimeline(timeline)
+puts_timeline(timeline)

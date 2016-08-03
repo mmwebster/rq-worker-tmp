@@ -207,11 +207,8 @@ class Timeline
   #       completed
   # @param course The course to test for having been completed
   def completed?(course)
-    if @completed_courses.key?(course.cid)
-      return true
-    else
-      return false
-    end
+    return true if @completed_courses.key?(course.cid)
+    false
   end
 
   # @desc Return a boolean of whether or not the passed course is in a
@@ -222,54 +219,40 @@ class Timeline
   #        Must be of type String.
   def satisfied?(course, parent_rel)
     # check if is in completed courses
-    if completed?(course)
-      return true
-    end
+    return true if completed?(course)
 
     # determine offset from current_quarter
-    if parent_rel == 'pre'
-      offset = -1
-    elsif parent_rel == 'co'
-      offset = 0
-    else
-      raise 'ERROR: invalid parent_rel type'
-      (0...10).each do
-        puts
-      end
-    end
+    offset = -1 if parent_rel == 'pre'
+    offset = 0 if parent_rel == 'co'
+
+    # determine end index of quarters to look at, from quarter offset
     end_index = @current_quarter + offset
 
     # determine the quarters list to check
-    if end_index == -1
-      iterating_quarters = []
-    elsif end_index.zero?
-      iterating_quarters = [@quarters[0]]
-    else
-      iterating_quarters = @quarters[0...end_index]
-    end
+    iterating_quarters = if end_index == -1
+                           []
+                         elsif end_index.zero?
+                           [@quarters[0]]
+                         else
+                           @quarters[0...end_index]
+                         end
 
     # check the quarters
     iterating_quarters.each do |quarter|
       quarter.courses.each do |c|
-        if course.cid == c.cid
-          return true
-        end
+        return true if course.cid == c.cid
       end
     end
-    return false
+    false
   end
 
   # @desc Returns a string for the season of the current quarter (end of
   #       quarters list)
   def current_season
-    if @quarters
-      return @quarters[@current_quarter].season
-    else
-      return @starting_season
-    end
+    return @quarters[@current_quarter].season if @quarters
+    @starting_season
   end
 end
-
 
 ################################################################################
 # Function definitions
@@ -280,7 +263,7 @@ end
 #       quarter
 # @param timeline The timeline to puts out
 # ******************************************************************************
-def putsTimeline(timeline)
+def puts_timeline(timeline)
   puts('Timeline:')
   year = 1
 
@@ -303,16 +286,18 @@ end
 #       mods.
 # @param head The head of the tree, of type Node
 # ******************************************************************************
-def putsTree(head)
+def puts_tree(head)
   puts '- - - - - - - Printing Tree - - - - - - - - -'
   current_level = [head]
-  while current_level.length > 0
+  until current_level.empty?
     next_level = []
     current_level.each do |node|
-      if node.course != nil
-        print '(' + node.object_id.to_s + '->numReq: ' + node.num_required.to_s + ', cid: ' + node.course.cid + ')'
+      if !node.course.nil?
+        print '(' + node.object_id.to_s + '->numReq: ' + node.num_required.to_s
+        + ', cid: ' + node.course.cid + ')'
       else
-        print '(' + node.object_id.to_s + '->numReq: ' + node.num_required.to_s + ', cid: ..)'
+        print '(' + node.object_id.to_s + '->numReq: ' + node.num_required.to_s
+        + ', cid: ..)'
       end
 
       node.children.each do |child|
@@ -329,11 +314,11 @@ end
 # @desc Prints out a stack of nodes according to their corresponding cids
 # @param stack The stack to puts, must be of type Stack
 # ******************************************************************************
-def putsPriorityStack(stack)
+def puts_priority_stack(stack)
   puts '- - -  - Printing Priority Stack - - - - -'
   print '| is_root | '
   stack.items.each do |node|
-    if node.course != nil
+    if !node.course.nil?
       print node.course.cid + ' | '
     else
       print 'is_root | '
@@ -346,12 +331,12 @@ end
 # @desc Prints out a dictionary
 # @param dictionary The dictionary
 # ******************************************************************************
-def putsDictionary(dictionary)
+def puts_dictionary(dictionary)
   keys = dictionary.keys
   puts '- - - - - Printing Dictionary - - - - -'
   print '{ '
   keys.each do |key|
-      print "'" + key + "': " + dictionary[key].to_s + " , "
+    print '\'' + key + '\': ' + dictionary[key].to_s + ' , '
   end
   puts '}'
 end
@@ -368,7 +353,7 @@ def bfs(node, lam, *args)
   queue.enqueue(node)
 
   # proceed with BFS, passing element along the way
-  while !queue.empty?
+  until queue.empty?
     n = queue.dequeue
     # perform passed function
     lam.call(n, *args)
@@ -385,19 +370,19 @@ end
 # @param node The head of the current sub-tree. Must be of type Node
 # @param order Boolean where false:Ascending and true:Descending order
 # ******************************************************************************
-def dfsSort(node, isDescending)
+def dfs_sort(node, is_descending)
   # default node's num_descendents to zero
   node.num_descendents = 0
   # for every child of node
   node.children.each do |child|
     # visit the child
-    dfsSort(child, isDescending)
+    dfs_sort(child, is_descending)
     # inc. num of descendents on node by this child's descendents and the child
     # itself
     node.num_descendents += child.num_descendents + 1
   end
   # sort this node's children
-  if isDescending
+  if is_descending
     node.children.sort! { |a, b| b.num_descendents <=> a.num_descendents }
   else
     node.children.sort! { |a, b| a.num_descendents <=> b.num_descendents }
@@ -412,7 +397,7 @@ end
 # @param node The head of the current sub-tree. Must be of type Node
 # @param removables Dict. of items to remove in form [cid]->[course]
 # ******************************************************************************
-def dfsClean(node, removables)
+def dfs_clean(node, removables)
   i = 0
   end_index = node.children.length
   while i < end_index
@@ -424,7 +409,7 @@ def dfsClean(node, removables)
       end_index -= 1
     else
       # otherwise, visit it
-      dfsClean(node.children[i], removables)
+      dfs_clean(node.children[i], removables)
     end
     i += 1
   end
@@ -438,45 +423,42 @@ end
 #       to get a fully fledged gen-path or one-path tree. To also work with
 #       pivot nodes, need make change detailed in workflow 2.0.
 # @param node The head of the current sub-tree. Must be of type Node
-# @param courseNodes A 1 dimensional array of nodes w/ defined subtrees
-# @param courseNodeDict Dict. of [cid]->[index in courseNodes] used as a lookup
+# @param course_nodes A 1 dimensional array of nodes w/ defined subtrees
+# @param courseNodeDict Dict. of [cid]->[index in course_nodes] used as a lookup
 #        table
 # ******************************************************************************
-def dfsConnectNodeSubtrees(node, courseNodes, courseNodeLookupDict)
+def dfs_connect_node_subtrees(node, course_nodes, course_node_lookup_dict)
   # for every child in node
   node.children.each do |child|
     # lookup child in dict. and use to define children of child
-    child.children = 
-      courseNodes[courseNodeLookupDict[child.course.cid]].children
+    child.children =
+      course_nodes[course_node_lookup_dict[child.course.cid]].children
     # dive into children
-    dfsConnectNodeSubtrees(child, courseNodes, courseNodeLookupDict)
+    dfs_connect_node_subtrees(child, course_nodes, course_node_lookup_dict)
   end
 end
 
 # ******************************************************************************
 # @desc Creates and returns a priority stack of all the nodes in the passed
 #       tree. This is done by performing a basic BFS, where
-#       pushToPriorityStack(node) is called for every visit (dequeue) of a node.
-#       Root node is not added to stack.
+#       push_to_priority_stack(node) is called for every visit (dequeue) of a
+#       node. Root node is not added to stack.
 # @param node The head of the current sub-tree. Must be of type Node
 # ******************************************************************************
-def createPriorityStack(node)
-  # @desc Pushes a node into the priority stack
-  # @param node The node to be pushed
-  def pushToPriorityStack(node, priorityStack)
-    unless node.is_root
-      priorityStack.push(node)
-    end
-  end
+def create_priority_stack(node)
+  # @desc BFS proxy function that pushes a node into the priority stack
+  # @param n The node to be pushed
+  # @param p The priority stack to receive the node
+  lam = -> (n, p) { p.push(n) unless n.is_root }
 
   # init final priority stack
-  priorityStack = Stack.new
-  # proxy the custom BFS function
-  lam = -> (node, priorityStack) {pushToPriorityStack(node, priorityStack)}
+  priority_stack = Stack.new
+
   # populate priority stack
-  bfs(node, lam, priorityStack)
+  bfs(node, lam, priority_stack)
+
   # return it
-  priorityStack
+  priority_stack
 end
 
 # ******************************************************************************
@@ -485,105 +467,99 @@ end
 # @param node The node to perform eval on
 # @param timeline A reference to the currently mapped out timeline
 # ******************************************************************************
-def courseDoesEval(node, timeline)
+def course_does_eval(node, timeline)
   # 1. course in completed courses?
-  if timeline.completed?(node.course)
-    return false
-  end
+  return false if timeline.completed?(node.course)
+
   # 2. is it offered this quarter?
-  # if node.course.cid == "PHYS5A"
-  #   binding.pry
-  # end
-  if not node.course.seasons_offered[timeline.current_season]
-    return false
-  end
+  return false unless node.course.seasons_offered[timeline.current_season]
+
   # 3/4. All reqs satisfied? (children with 'pre' and 'co' as parent_rel)
   node.children.each do |child|
-    unless timeline.satisfied?(child.course, child.parent_rel)
-      return false
-    end
+    return false unless timeline.satisfied?(child.course, child.parent_rel)
+  end
+
   # 5/6. Make sure that quarter unit limit has not been exceeded (including
   # potential concurrent courses)
-  end
-
-  totalPotentialUnits =
+  total_potential_units =
     timeline.quarters[timeline.current_quarter].total_units +
     node.course.total_units
-
-  if totalPotentialUnits > timeline.quarters[timeline.current_quarter].max_units
-      return false # collectively exceed unit limit
+  if total_potential_units >
+     timeline.quarters[timeline.current_quarter].max_units
+    return false # collectively exceed unit limit
   end
+
   # All tests passed
-  return true
+  true
 end
 
 # ******************************************************************************
 # @desc Maps a path across quarters in the timeline
 # @param timeline The timeline to operate on
-# @param headOrigin The head of the consolidated one-path tree. This object is
+# @param head_origin The head of the consolidated one-path tree. This object is
 #        copied so that the source tree is not mutated.
 # ******************************************************************************
-def mapTimeline(timeline, headOrigin)
+def map_timeline(timeline, head_origin)
   # duplicate the head node
-  head = DeepClone.clone(headOrigin)
+  head = DeepClone.clone(head_origin)
   # dict. of courses used to quickly check if course has already been placed
-  addedCourses = {}
+  added_courses = {}
   # always start mapping (or remapping) at the first quarter
-  timeline.current_quarter = 0 
+  timeline.current_quarter = 0
   # 5. return once all descendents of head have been placed
-  while head.children.length > 0
-    # 6. Add any pre-existing courses in current quarter to the addedCourses
+  until head.children.empty?
+    # 6. Add any pre-existing courses in current quarter to the added_courses
     # dict.
     timeline.quarters[timeline.current_quarter].courses.each do |course|
-      addedCourses[course.cid] = true
+      added_courses[course.cid] = true
     end
     # 7. recursively sort tree (DFS) by number of children, from least->most b/c
     #    a BFS is left->right, top->down and a stack is LIFO..making the bottom
     #    right node appear first
-    dfsSort(head, false)
-    # putsTree(head)
+    dfs_sort(head, false)
+    # puts_tree(head)
     # 8. populate 'priority stack' about the head of tree
-    priorityStack = createPriorityStack(head)
-    # putsPriorityStack(priorityStack)
+    priority_stack = create_priority_stack(head)
+    # puts_priority_stack(priority_stack)
     # 9. operate on each node in stack unless exit condition evals
-    (0...priorityStack.items.length).each do |i|
-      node = priorityStack.pop
-      # 10. Node's course exists in addedCourses dict.?
-      if addedCourses.key?(node.course.cid)
+    (0...priority_stack.items.length).each do
+      node = priority_stack.pop
+      # 10. Node's course exists in added_courses dict.?
+      if added_courses.key?(node.course.cid)
         next # move to next node in stack
       end
       # 11. Node's course passes eval for current quarter?
-      unless courseDoesEval(node, timeline)
+      unless course_does_eval(node, timeline)
         next # move to next node in stack
       end
-      # 12. Add course and any concurrents to addedCourses dict. & current
+      # 12. Add course and any concurrents to added_courses dict. & current
       #     quarter in timeline. Undecided about the concurrent, so not adding
       #     that for now
-      addedCourses[node.course.cid] = node.course
+      added_courses[node.course.cid] = node.course
       timeline.quarters[timeline.current_quarter].courses.push(node.course)
       # 13. Current quarter's total units equal quarter's max_units?
-      unless timeline.quarters[timeline.current_quarter].total_units == \
-              timeline.quarters[timeline.current_quarter].max_units
-        next # move to next node in stack
-      else
+      if timeline.quarters[timeline.current_quarter].total_units ==
+         timeline.quarters[timeline.current_quarter].max_units
         break # move to next quarter, recomputing priority stack
+      else
+        next # move to next node in stack
       end
     end
     # 14. Increment current quarter
     timeline.current_quarter += 1 # move to next quarter
     # 14.2. Make sure that quarter exists
     if timeline.quarters.length == timeline.current_quarter
-        seasonsMap = { 'fall' => 0, 'winter' => 1, 'spring' => 2 }
-        seasons = ['fall', 'winter', 'spring']
-        old_season = timeline.quarters[timeline.current_quarter-1].season
-        new_season = seasons[(seasonsMap[old_season] + 1) % 3]
-        timeline.quarters.push(Quarter.new([], new_season))
+      seasons_map = { 'fall' => 0, 'winter' => 1, 'spring' => 2 }
+      seasons = %w(fall winter spring)
+      old_season = timeline.quarters[timeline.current_quarter - 1].season
+      new_season = seasons[(seasons_map[old_season] + 1) % 3]
+      timeline.quarters.push(Quarter.new([], new_season))
     end
     # 15. Mutate and cleanup the tree copy, `head`, from any nodes matching
     # courses in dict. temp for testing
-    # putsDictionary(addedCourses)
-    dfsClean(head, addedCourses)
-    # putsTree(head)
+    # puts_dictionary(added_courses)
+    dfs_clean(head, added_courses)
+    # puts_tree(head)
     # 16. Return to step 5
   end
 end
