@@ -495,7 +495,7 @@ def course_does_eval(node, timeline)
   end
 
   # All tests passed
-  true
+  return true
 end
 
 # ******************************************************************************
@@ -506,7 +506,7 @@ end
 # ******************************************************************************
 def map_timeline(timeline, head_origin)
   # duplicate the head node
-  head = DeepClone.clone(head_origin)
+  head = head_origin.clone()
   # dict. of courses used to quickly check if course has already been placed
   added_courses = {}
   # always start mapping (or remapping) at the first quarter
